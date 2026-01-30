@@ -2,7 +2,7 @@ import React from 'react';
 import { Settings as SettingsIcon, Database, Server, User } from 'lucide-react';
 import DataUpload from '../components/DataUpload';
 
-const Settings = () => {
+const Settings = ({ user }) => {
     return (
         <div className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -17,7 +17,7 @@ const Settings = () => {
                         </h3>
                         <div className="flex items-center justify-between py-3 border-b border-white/5">
                             <span className="text-zinc-400">Type</span>
-                            <span className="font-medium">SQLite (Local)</span>
+                            <span className="font-medium">MongoDB (Cloud)</span>
                         </div>
                         <div className="flex items-center justify-between py-3 border-b border-white/5">
                             <span className="text-zinc-400">Status</span>
@@ -37,7 +37,7 @@ const Settings = () => {
                 <div className="space-y-6">
                     <div className="glass p-6 rounded-2xl">
                         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-                            <Server size={20} className="text-violet-500" />
+                            <Server size={20} className="text-cyan-500" />
                             API Configuration
                         </h3>
                         <div className="space-y-4">
@@ -58,12 +58,12 @@ const Settings = () => {
                             Profile
                         </h3>
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-pink-500 to-orange-500 flex items-center justify-center font-bold text-lg">
-                                JD
+                            <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-pink-500 to-orange-500 flex items-center justify-center font-bold text-lg text-white">
+                                {user ? user.name.charAt(0).toUpperCase() : 'U'}
                             </div>
                             <div>
-                                <p className="font-bold">John Doe</p>
-                                <p className="text-zinc-400 text-sm">Admin</p>
+                                <p className="font-bold">{user ? user.name : 'User'}</p>
+                                <p className="text-zinc-400 text-sm">{user ? user.email : ''}</p>
                             </div>
                             <button className="ml-auto px-4 py-2 border border-white/10 hover:bg-white/5 rounded-lg text-sm transition-colors">
                                 Edit

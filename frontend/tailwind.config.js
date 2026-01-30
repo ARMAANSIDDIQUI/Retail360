@@ -10,8 +10,8 @@ export default {
                 background: "#09090b", // Zinc 950
                 surface: "#18181b", // Zinc 900
                 primary: "#3b82f6", // Blue 500
-                secondary: "#8b5cf6", // Violet 500
-                accent: "#06b6d4", // Cyan 500
+                secondary: "#06b6d4", // Cyan 500
+                accent: "#10b981", // Emerald 500
             },
             fontFamily: {
                 sans: ['Inter', 'sans-serif'],

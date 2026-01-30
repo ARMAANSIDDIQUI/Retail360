@@ -28,8 +28,12 @@ const DataUpload = ({ onUploadSuccess }) => {
         formData.append('file', file);
 
         try {
+            const token = localStorage.getItem('token');
             await axios.post('http://localhost:5000/api/upload', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'x-auth-token': token
+                }
             });
             setSuccess("Data processed successfully! ML Models updated.");
             setFile(null);
@@ -44,10 +48,14 @@ const DataUpload = ({ onUploadSuccess }) => {
 
     return (
         <div className="glass p-6 rounded-2xl">
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <Upload size={20} className="text-blue-500" />
-                Data Ingestion
-            </h3>
+            <div className="flex justify-between items-start mb-4">
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                    <Upload size={20} className="text-blue-500" />
+                    Data Ingestion
+                </h3>
+                <span className="text-xs text-zinc-500 border border-white/10 px-2 py-1 rounded-full">Max 5 Uploads per User</span>
+            </div>
+
             <p className="text-zinc-400 text-sm mb-6">
                 Upload your latest transaction data (.xlsx or .csv) to update the dashboard and ML models.
             </p>
@@ -94,7 +102,7 @@ const DataUpload = ({ onUploadSuccess }) => {
                     <button
                         onClick={handleUpload}
                         disabled={uploading}
-                        className="w-full py-2 bg-gradient-to-r from-blue-600 to-violet-600 rounded-lg font-medium hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center justify-center gap-2"
+                        className="w-full py-2 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg font-medium hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center justify-center gap-2"
                     >
                         {uploading ? <Loader2 className="animate-spin" size={18} /> : "Process Data"}
                     </button>

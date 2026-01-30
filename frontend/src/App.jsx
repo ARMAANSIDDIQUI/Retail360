@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, useLocation, Link, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Users, TrendingUp, Settings as SettingsIcon, Activity, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, TrendingUp, Settings as SettingsIcon, Activity, Menu, X, LogOut, User as UserIcon } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 
 import Customers from './pages/Customers';
 import Forecast from './pages/Forecast';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
+import Register from './pages/Register';
+import Profile from './pages/Profile';
 
 const Dashboard = () => {
     const [stats, setStats] = useState({ total_revenue: 0, total_customers: 0, status: 'Loading...' });
@@ -42,7 +44,7 @@ const Dashboard = () => {
                         value: loading ? '...' : stats.total_customers.toLocaleString(),
                         trend: 'Live',
                         icon: Users,
-                        color: 'text-violet-500'
+                        color: 'text-cyan-500' // Updated to Cyan
                     },
                     {
                         title: 'System Status',
@@ -149,22 +151,27 @@ const App = () => {
     const handleLogout = () => {
         setUser(null);
         localStorage.removeItem('retail360_user');
+        localStorage.removeItem('token');
     };
 
     if (checkingAuth) {
         return <div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>;
     }
 
+    // Auth Routes
+    const isAuthRoute = location.pathname === '/login' || location.pathname === '/register';
+
     // Force Login Redirect
     if (!user) {
-        if (location.pathname === '/login') {
+        if (isAuthRoute) {
+            if (location.pathname === '/register') return <Register onLogin={handleLogin} />;
             return <Login onLogin={handleLogin} />;
         }
         return <Navigate to="/login" replace />;
     }
 
-    // If logged in and at /login, go to home
-    if (user && location.pathname === '/login') {
+    // If logged in and at auth routes, go to home
+    if (user && isAuthRoute) {
         return <Navigate to="/" replace />;
     }
 
@@ -182,7 +189,7 @@ const App = () => {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 exit={{ opacity: 0 }}
-                                className="text-2xl font-bold tracking-tighter bg-gradient-to-r from-blue-400 to-violet-400 bg-clip-text text-transparent"
+                                className="text-2xl font-bold tracking-tighter bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent" // Updated to Cyan
                             >
                                 Retail360
                             </motion.div>
@@ -212,13 +219,20 @@ const App = () => {
                 {/* User Profile / Logout */}
                 <div className="absolute bottom-6 left-0 w-full px-4">
                     <div className={`flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/5 ${!isSidebarOpen && 'justify-center'}`}>
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-violet-500 flex items-center justify-center font-bold text-xs shrink-0">
-                            {user.name.charAt(0)}
-                        </div>
+                        <Link to="/profile">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-500 flex items-center justify-center font-bold text-xs shrink-0 cursor-pointer hover:scale-105 transition-transform text-white">
+                                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                            </div>
+                        </Link>
+
                         {isSidebarOpen && (
-                            <div className="overflow-hidden">
-                                <p className="text-sm font-bold truncate">{user.name}</p>
-                                <button onClick={handleLogout} className="text-xs text-red-400 hover:text-red-300">Log Out</button>
+                            <div className="overflow-hidden flex-1">
+                                <Link to="/profile" className="block text-sm font-bold truncate hover:text-blue-400 transition-colors">
+                                    {user.name}
+                                </Link>
+                                <button onClick={handleLogout} className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 mt-0.5">
+                                    Log Out
+                                </button>
                             </div>
                         )}
                     </div>
@@ -236,9 +250,11 @@ const App = () => {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-violet-500 flex items-center justify-center font-bold text-sm">
-                            {user.name.charAt(0)}
-                        </div>
+                        <Link to="/profile">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-500 flex items-center justify-center font-bold text-sm text-white shadow-lg shadow-blue-500/20 hover:scale-105 transition-transform">
+                                {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                            </div>
+                        </Link>
                     </div>
                 </header>
 
@@ -246,7 +262,8 @@ const App = () => {
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/customers" element={<Customers />} />
                     <Route path="/forecast" element={<Forecast />} />
-                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/settings" element={<Settings user={user} />} />
+                    <Route path="/profile" element={<Profile />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </main>

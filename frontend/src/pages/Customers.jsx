@@ -49,7 +49,7 @@ const Customers = () => {
             {/* Header Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="glass p-6 rounded-2xl flex items-center gap-4">
-                    <div className="p-3 bg-violet-500/20 text-violet-500 rounded-xl">
+                    <div className="p-3 bg-cyan-500/20 text-cyan-500 rounded-xl">
                         <Users size={24} />
                     </div>
                     <div>
